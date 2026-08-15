@@ -1,0 +1,61 @@
+# =============== #
+# Unity generated  #
+# =============== #
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+
+# ============ #
+# Memory snaps  #
+# ============ #
+*.mem
+
+# ============================= #
+# Visual Studio / Rider cache   #
+# ============================= #
+.vs/
+.idea/
+
+# ===================================== #
+# Unity asset meta files should NOT be   #
+# ignored, they are required for Unity   #
+# ===================================== #
+# *.pidb
+# *.special
+# *.part
+# *.shproj
+
+# ====================================== #
+# Crash reports / backups                 #
+# ====================================== #
+*.apk
+*.aab
+*.unitypackage
+*.app
+
+# =============================== #
+# Crashlytics generated file      #
+# =============================== #
+crashlytics-build.properties
+sysinfo.txt
+
+# =============================== #
+# Builds                          #
+# =============================== #
+*.apk
+*.unitypackage
+
+# =============================== #
+# OS generated files              #
+# =============================== #
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
