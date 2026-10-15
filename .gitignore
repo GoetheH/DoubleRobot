@@ -1,61 +1,58 @@
-# =============== #
-# Unity generated  #
-# =============== #
+# Unity generated caches (including UnityProject/)
 [Ll]ibrary/
 [Tt]emp/
 [Oo]bj/
-[Bb]uild/
-[Bb]uilds/
 [Ll]ogs/
 [Uu]ser[Ss]ettings/
-
-# ============ #
-# Memory snaps  #
-# ============ #
-*.mem
-
-# ============================= #
-# Visual Studio / Rider cache   #
-# ============================= #
+[Bb]uild/
+[Bb]uilds/
+MemoryCaptures/
+Recordings/
 .vs/
 .idea/
+.vscode/
+*.csproj
+*.sln
+*.suo
+*.user
+*.pidb
+*.pdb
+*.opendb
+*.VC.db
+*.log
+*.tmp
+*.bak
+sysinfo.txt
+.DS_Store
+Thumbs.db
 
-# ===================================== #
-# Unity asset meta files should NOT be   #
-# ignored, they are required for Unity   #
-# ===================================== #
-# *.pidb
-# *.special
-# *.part
-# *.shproj
-
-# ====================================== #
-# Crash reports / backups                 #
-# ====================================== #
+# Rebuildable distributions and original archives remain local.
+/试玩版/
+/试玩版-*/
+/原始压缩包/
+*.zip
+*.7z
+*.exe
+*.dll
+*.unitypackage
 *.apk
 *.aab
-*.unitypackage
-*.app
 
-# =============================== #
-# Crashlytics generated file      #
-# =============================== #
-crashlytics-build.properties
-sysinfo.txt
+# Preserve selected review images and the current validation report only.
+/验证/*
+!/验证/runtime-validation.txt
+!/验证/01-menu.png
+!/验证/campaign-*.png
+!/验证/slice-01-street.png
+!/验证/slice-02-dual-wield.png
+!/验证/skill-3.png
 
-# =============================== #
-# Builds                          #
-# =============================== #
-*.apk
-*.unitypackage
-
-# =============================== #
-# OS generated files              #
-# =============================== #
-.DS_Store
-.DS_Store?
-._*
-.Spotlight-V100
-.Trashes
-ehthumbs.db
-Thumbs.db
+# Local migration details and machine-specific data
+/迁移记录.md
+.openai/
+.env
+.env.*
+!.env.example
+*.pem
+*.pfx
+*.key
