@@ -12,7 +12,7 @@ public static class NeonBuild
         NeonAuthoringValidation.ValidateAssets();
         if(!UnityEngine.Resources.Load<UnityEngine.Font>("Fonts/ChineseUI"))throw new Exception("WebGL requires the bundled Chinese UI font.");
         PlayerSettings.productName="霓虹突围（NEON BREAKOUT）";
-        PlayerSettings.bundleVersion="1.1.0";
+        PlayerSettings.bundleVersion="1.1.1";
         PlayerSettings.defaultWebScreenWidth=1600;PlayerSettings.defaultWebScreenHeight=900;
         PlayerSettings.WebGL.compressionFormat=WebGLCompressionFormat.Gzip;
         PlayerSettings.WebGL.decompressionFallback=true;

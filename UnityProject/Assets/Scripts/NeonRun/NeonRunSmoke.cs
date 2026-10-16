@@ -284,7 +284,7 @@ public partial class NeonRun
                 Require(turretUntil == clock + 8, "engineer turret"); enemies.Add(new Foe { p = player + Vector2.right * 3, hp = 100, max = 100 });
                 shots.Clear(); UpdateCampaign(.016f); Require(shots.Count == 1, "turret tracks/fires");
             }
-            if (job == 3) Require(player == before && immuneUntil == 0 && skillUntil == clock+6 && skillReady == clock+14, "scout scan without movement or invulnerability");
+            if (job == 3) Require(player == before && immuneUntil == 0 && skillUntil == clock+6 && skillReady == clock+6, "scout scan without movement or invulnerability");
             float cooldown = skillReady; UseSkill(); Require(skillReady == cooldown, "skill cannot spam");
         }
         profession = 0;
@@ -301,12 +301,13 @@ public partial class NeonRun
         shots.Clear();shots.Add(new Shot{p=scanFar.p+Vector2.up*.5f-Vector2.right*.2f,v=Vector2.right*20,life=1,damage=16,gun=0});UpdateShots(.016f);
         Require(scanFar.hp==984,"unscanned target takes normal damage");
         var scanLate=new Foe{p=player+Vector2.right*5,hp=1000,max=1000};enemies.Add(scanLate);UseSkill();
-        Require(!IsScanned(scanLate)&&skillReady==14,"cooldown blocks rescanning newly spawned enemies");
+        Require(!IsScanned(scanLate)&&skillReady==6,"cooldown blocks rescanning newly spawned enemies");
+        clock=5.999f;UseSkill();Require(!IsScanned(scanLate)&&skillReady==6,"scan still cooling down immediately before six seconds");
         shots.Clear();shots.Add(new Shot{p=scanNear.p+Vector2.up*.5f-Vector2.right*.2f,v=Vector2.right*20,life=1,damage=16,gun=-1});UpdateShots(.016f);
         Require(scanNear.hp==960,"scan does not amplify automated turret damage");
         clock=6;shots.Clear();FirePlayer();for(int i=0;i<20;i++)UpdateShots(.016f);
         Require(!IsScanned(scanNear)&&scanNear.hp==944,"expiry restores normal damage exactly at six seconds");
-        clock=14;UseSkill();Require(IsScanned(scanLate)&&skillReady==28,"scan ready after fourteen seconds");
+        UseSkill();Require(IsScanned(scanLate)&&skillReady==12,"scan ready exactly at six seconds");
         BeginSector(3);player=new Vector2(20,Floor);UseSkill();Require(IsScanned(enemies[0]),"boss within radius is scanned");
         float bossBefore=enemies[0].hp;shots.Clear();shots.Add(new Shot{p=enemies[0].p-Vector2.right*.2f,v=Vector2.right*20,life=1,damage=100,gun=2,pierce=true});UpdateShots(.016f);
         Require(enemies[0].hp==bossBefore-150,"marked boss takes amplified sniper damage");

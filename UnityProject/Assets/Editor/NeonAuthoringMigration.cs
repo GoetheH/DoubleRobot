@@ -43,7 +43,7 @@ public static class NeonAuthoringMigration
         int[] damages={16,13,100,11,8};float[] rates={.145f,.65f,1.05f,.085f,.065f},speed={28,22,55,30,23},life={1.5f,.55f,1.6f,1.4f,.72f},reach={.95f,1.05f,1.45f,1.2f,.72f},width={1.35f,1.48f,1.98f,1.6f,1.02f};
         Color[] guns={new Color(.22f,.95f,.88f),new Color(1,.78f,.25f),new Color(1,.25f,.48f),new Color(.65f,.86f,1),new Color(.72f,.55f,1)};
         for(int i=0;i<5;i++)b.guns[i]=new NeonBalance.Gun{name=names[i],damage=damages[i],interval=rates[i],speed=speed[i],lifetime=life[i],pellets=i==1?7:1,pelletAngle=i==1?7:4,randomSpread=i==3?4:i==4?9:0,penetration=i==2,distanceFalloff=i==1,usesHeat=i==3,muzzleDistance=reach[i],displayWidth=width[i],color=guns[i]};
-        string[] roles={"突击兵","医疗兵","工程师","侦察兵"};float[] duration={5,2,8,6},cooldown={12,14,15,14};
+        string[] roles={"突击兵","医疗兵","工程师","侦察兵"};float[] duration={5,2,8,6},cooldown={12,14,15,6};
         Color[] colors={new Color(1,.56f,.18f),new Color(.25f,1,.55f),new Color(1,.8f,.2f),new Color(.72f,.42f,1)};
         for(int i=0;i<4;i++)b.roles[i]=new NeonBalance.Role{name=roles[i],duration=duration[i],cooldown=cooldown[i],moveSpeed=i==3?8.6f:7.4f,color=colors[i]};
         b.difficulties[0]=new NeonBalance.Difficulty{name="简单",health=.75f,damage=.7f,attackInterval=1.25f};
