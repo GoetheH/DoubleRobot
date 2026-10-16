@@ -9,6 +9,7 @@ public static class NeonBuild
     {
         string output = Environment.GetEnvironmentVariable("NEON_BUILD_PATH");
         if (string.IsNullOrEmpty(output)) throw new Exception("NEON_BUILD_PATH is required");
+        NeonAuthoringValidation.ValidateAssets();
         PlayerSettings.productName = "霓虹突围（NEON BREAKOUT）";
         PlayerSettings.defaultScreenWidth = 1600;
         PlayerSettings.defaultScreenHeight = 900;

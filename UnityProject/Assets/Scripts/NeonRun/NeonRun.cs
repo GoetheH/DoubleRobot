@@ -13,7 +13,6 @@ public partial class NeonRun : MonoBehaviour
     public int MaxHealth { get; private set; }
     public Vector2 PlayerPosition { get { return player; } }
     public int EnemyCount { get { return enemies.Count; } }
-    const float Floor = 1.4f;
     Vector2 player, velocity, aim = Vector2.right;
     float cameraX, clock, nextShot, dashUntil, dashReady, immuneUntil, spawnAt, comboUntil;
     float coyoteUntil, jumpBufferedUntil, shake, bannerUntil;
@@ -49,7 +48,9 @@ public partial class NeonRun : MonoBehaviour
         audioSource = gameObject.AddComponent<AudioSource>();
         fireSound = Tone(340, .055f); hitSound = Tone(95, .13f);
         jumpSound = Tone(520, .08f); upgradeSound = Tone(780, .24f);
+        LoadAuthoring();
         MakeArt();
+        ApplyArtOverrides();
         State = Phase.Menu;
         player = new Vector2(5, Floor);
         if (Array.IndexOf(Environment.GetCommandLineArgs(), "--neon-smoke") >= 0) StartCoroutine(RunSmoke());
@@ -60,11 +61,11 @@ public partial class NeonRun : MonoBehaviour
     {
         runDifficulty = selectedDifficulty;
         enemies.Clear(); shots.Clear(); sparks.Clear(); pickups.Clear();
-        Health = MaxHealth = 100; Kills = score = combo = bestCombo = 0;
+        Health = MaxHealth = balance.startingHealth; Kills = score = combo = bestCombo = 0;
         damageLevel = rateLevel = spreadLevel = 0;
-        weapon = selectedWeapon; dashCooldown = 1.35f;
+        weapon = selectedWeapon; dashCooldown = balance.dashCooldown;
         clock = 0; nextShot = dashUntil = dashReady = immuneUntil = 0;
-        BeginSector(1);
+        BeginSector(InitialSector());
     }
 
     void BeginSector(int sector)
@@ -72,19 +73,10 @@ public partial class NeonRun : MonoBehaviour
         Sector = sector; State = Phase.Playing;
         player = new Vector2(4, Floor); velocity = Vector2.zero; cameraX = 0;
         shots.Clear(); enemies.Clear(); pickups.Clear(); ledges.Clear();
-        ledges.Add(new Rect(8, 3.3f, 4.4f, .32f));
-        ledges.Add(new Rect(16, 4.9f, 4, .32f));
-        ledges.Add(new Rect(25, 3.5f, 5, .32f));
-        ledges.Add(new Rect(35, 5.0f, 4, .32f));
-        jumps = 0; spawned = 0; quota = (sector == 3 || sector == 8) ? 1 : 6 + sector * 2;
+        jumps = 0; spawned = 0; quota = 0;
         spawnAt = clock + 1.2f; bannerUntil = clock + 3;
         coyoteUntil = jumpBufferedUntil = -1;
         ConfigureSector();
-        if (sector == 3 || sector == 8)
-        {
-            float bossHealth = (sector == 8 ? 2200 : 1250) * EnemyHealthScale;
-            enemies.Add(new Foe { p = new Vector2(28, 5.8f), hp = bossHealth, max = bossHealth, kind = 3, fire = clock + 2 * EnemyAttackIntervalScale }); spawned = 1;
-        }
     }
 
     void Update()
@@ -116,19 +108,19 @@ public partial class NeonRun : MonoBehaviour
         if (jumpBufferedUntil >= clock && (jumps < 2 || coyoteUntil >= clock))
         {
             if (!grounded && coyoteUntil < clock && jumps == 0) jumps = 1;
-            velocity.y = 10.6f; jumps++; grounded = false; coyoteUntil = -1; jumpBufferedUntil = -1;
+            velocity.y = balance.jumpVelocity; jumps++; grounded = false; coyoteUntil = -1; jumpBufferedUntil = -1;
             Burst(player, Cyan, 8); Sound(jumpSound, .12f);
         }
         if ((Input.GetKeyDown(KeyCode.LeftShift) || Input.GetMouseButtonDown(1)) && clock >= dashReady)
         {
             dashFacing = move != 0 ? (int)Mathf.Sign(move) : (aim.x >= 0 ? 1 : -1);
-            dashUntil = clock + .17f; dashReady = clock + dashCooldown; immuneUntil = Mathf.Max(immuneUntil, dashUntil);
+            dashUntil = clock + balance.dashDuration; dashReady = clock + dashCooldown; immuneUntil = Mathf.Max(immuneUntil, dashUntil);
             Burst(player + Vector2.up * .4f, Cyan, 10);
         }
         if (Input.GetMouseButton(0) && clock >= nextShot) FirePlayer();
         previousBottom = player.y;
-        velocity.x = clock < dashUntil ? dashFacing * 23 : move * (profession == 3 ? 8.6f : weapon == 3 ? 6.3f : 7.4f);
-        velocity.y = clock < dashUntil ? 0 : velocity.y - 27 * dt;
+        velocity.x = clock < dashUntil ? dashFacing * balance.dashSpeed : move * CurrentRole.moveSpeed * (CurrentGun.usesHeat?balance.machinegunMoveScale:1);
+        velocity.y = clock < dashUntil ? 0 : velocity.y - balance.gravity * dt;
         player += velocity * dt; player.x = Mathf.Clamp(player.x, .6f, mapWidth - .5f);
         grounded = false;
         if (player.y <= Floor) Land(Floor);
@@ -151,28 +143,25 @@ public partial class NeonRun : MonoBehaviour
         float hp = ((kind == 2 ? 95 : 48) + Sector * 12) * EnemyHealthScale;
         enemies.Add(new Foe { p = new Vector2(x, Sector >= 4 ? Mathf.Clamp(player.y + (kind == 1 ? 3 : 0), Floor, mapHeight - 3) : kind == 1 ? 5 : Floor), kind = kind, hp = hp, max = hp, fire = clock + 1.3f * EnemyAttackIntervalScale, phase = spawned });
         Burst(new Vector2(x, Floor + .5f), Pink, 10);
-        spawned++; spawnAt = clock + 1.8f;
+        spawned++; spawnAt = clock + activeLayout.waveInterval;
     }
 
     void FirePlayer()
     {
-        if (weapon == 3 && overheated) return;
-        float[] intervals = { .145f, .65f, 1.05f, .085f, .065f };
-        float[] speeds = { 28, 22, 55, 30, 23 };
-        float[] lives = { 1.5f, .55f, 1.6f, 1.4f, .72f };
-        int[] damages = { 16, 13, 100, 11, 8 };
-        nextShot = clock + intervals[weapon] / (1 + rateLevel * .18f);
-        int count = (weapon == 1 ? 7 : 1) + spreadLevel * 2;
+        var gun=CurrentGun;
+        if (gun.usesHeat && overheated) return;
+        nextShot = clock + gun.interval / (1 + rateLevel * .18f);
+        int count = gun.pellets + spreadLevel * 2;
         int barrels = IsDualWield ? 2 : 1;
         for (int barrel = 0; barrel < barrels; barrel++)
         for (int i = 0; i < count; i++)
         {
-            float angle = (i - (count - 1) / 2f) * (weapon == 1 ? 7 : 4);
-            if (weapon == 3 || weapon == 4) angle += UnityEngine.Random.Range(weapon == 4 ? -9f : -4f, weapon == 4 ? 9f : 4f);
+            float angle = (i - (count - 1) / 2f) * gun.pelletAngle;
+            if (gun.randomSpread>0) angle += UnityEngine.Random.Range(-gun.randomSpread,gun.randomSpread);
             Vector2 dir = Quaternion.Euler(0, 0, angle) * aim;
-            shots.Add(new Shot { p = GunMuzzle(barrel), v = dir * speeds[weapon], life = lives[weapon], damage = Mathf.RoundToInt(damages[weapon] * (1 + damageLevel * .25f)), color = GunColors[weapon], pierce = weapon == 2, gun = weapon, barrel = barrel });
+            shots.Add(new Shot { p = GunMuzzle(barrel), v = dir * gun.speed, life = gun.lifetime, damage = Mathf.RoundToInt(gun.damage * (1 + damageLevel * .25f)), color = GunColors[weapon], pierce = gun.penetration, gun = weapon, barrel = barrel });
         }
-        if (weapon == 3) { heat = Mathf.Min(1, heat + .065f * barrels); if (heat >= .99f) overheated = true; }
+        if (gun.usesHeat) { heat = Mathf.Min(1, heat + gun.heatPerShot * barrels); if (heat >= .99f) overheated = true; }
         flashUntil = clock + .075f;
         for (int barrel = 0; barrel < barrels; barrel++) Burst(GunMuzzle(barrel), GunColors[weapon], weapon == 1 ? 8 : 3);
         Sound(fireSound, weapon == 1 ? .13f : .08f);
@@ -216,9 +205,9 @@ public partial class NeonRun : MonoBehaviour
                 {
                     Foe e = enemies[j];
                     if (s.hit.Contains(e) || SegmentDistance(e.p + Vector2.up * (e.kind == 3 ? 0 : .5f), from, s.p) > (e.kind == 3 ? 1.45f : .6f)) continue;
-                    int hitDamage = s.gun == 1 ? Mathf.RoundToInt(s.damage * Mathf.Lerp(1, .25f, Mathf.Clamp01(s.traveled / 12))) : s.damage;
+                    int hitDamage = s.gun>=0&&balance.guns[s.gun].distanceFalloff ? Mathf.RoundToInt(s.damage * Mathf.Lerp(1, .25f, Mathf.Clamp01(s.traveled / 12))) : s.damage;
                     bool weakpoint=IsScanned(e)&&s.gun>=0;
-                    if(weakpoint) hitDamage=Mathf.RoundToInt(hitDamage*1.5f);
+                    if(weakpoint) hitDamage=Mathf.RoundToInt(hitDamage*balance.roles[3].scanMultiplier);
                     s.hit.Add(e); e.hp -= hitDamage; Burst(s.p, s.color, 5);
                     AddSpark(s.p, Vector2.up, weakpoint?ClassColors[3]:Color.white, .6f, hitDamage.ToString());
                     if (e.hp <= 0)
@@ -288,8 +277,8 @@ public partial class NeonRun : MonoBehaviour
     void OnApplicationFocus(bool focused) { if (!focused && State == Phase.Playing) State = Phase.Paused; }
     void OnDestroy()
     {
-        foreach (Texture2D t in ownedTextures) if (t != null) Destroy(t);
-        foreach (AudioClip clip in new[] { fireSound, hitSound, jumpSound, upgradeSound }) if (clip != null) Destroy(clip);
-        if (uiFont != null) Destroy(uiFont);
+        foreach (Texture2D t in ownedTextures) if (t != null) {if(Application.isPlaying)Destroy(t);else DestroyImmediate(t);}
+        foreach (AudioClip clip in new[] { fireSound, hitSound, jumpSound, upgradeSound }) if (clip != null) {if(Application.isPlaying)Destroy(clip);else DestroyImmediate(clip);}
+        if (uiFont != null) {if(Application.isPlaying)Destroy(uiFont);else DestroyImmediate(uiFont);}
     }
 }

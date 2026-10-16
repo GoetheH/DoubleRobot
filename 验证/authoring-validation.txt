@@ -1,0 +1,4 @@
+PASS — editable Unity authoring
+8 persistent level prefabs, Main scene workspace, 5 gun / 4 role / 3 difficulty configurations.
+Prefab Transform edit, save and reload succeeds; source content restored.
+Persistent PNG character, weapon, enemy and platform art available in Inspector.

@@ -1,0 +1,164 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 109415fb4d4200140b78a294f8b08533, type: 3}
+  m_Name: Balance
+  m_EditorClassIdentifier: 
+  guns:
+  - name: "\u8109\u51B2\u6B65\u67AA"
+    damage: 16
+    pellets: 1
+    interval: 0.145
+    speed: 28
+    lifetime: 1.5
+    pelletAngle: 4
+    randomSpread: 0
+    penetration: 0
+    distanceFalloff: 0
+    usesHeat: 0
+    heatPerShot: 0.065
+    muzzleDistance: 0.95
+    displayWidth: 1.35
+    color: {r: 0.22, g: 0.95, b: 0.88, a: 1}
+    artwork: {fileID: 2800000, guid: e0061d24be183204281cacb718666570, type: 3}
+  - name: "\u88C2\u7247\u9730\u5F39"
+    damage: 13
+    pellets: 7
+    interval: 0.65
+    speed: 22
+    lifetime: 0.55
+    pelletAngle: 7
+    randomSpread: 0
+    penetration: 0
+    distanceFalloff: 1
+    usesHeat: 0
+    heatPerShot: 0.065
+    muzzleDistance: 1.05
+    displayWidth: 1.48
+    color: {r: 1, g: 0.78, b: 0.25, a: 1}
+    artwork: {fileID: 2800000, guid: ec696146608e32746b00ec0944f1d87f, type: 3}
+  - name: "\u78C1\u8F68\u72D9\u51FB\u67AA"
+    damage: 100
+    pellets: 1
+    interval: 1.05
+    speed: 55
+    lifetime: 1.6
+    pelletAngle: 4
+    randomSpread: 0
+    penetration: 1
+    distanceFalloff: 0
+    usesHeat: 0
+    heatPerShot: 0.065
+    muzzleDistance: 1.45
+    displayWidth: 1.98
+    color: {r: 1, g: 0.25, b: 0.48, a: 1}
+    artwork: {fileID: 2800000, guid: a54504c43fc66fb48800d0ae49d15096, type: 3}
+  - name: "\u91CD\u578B\u673A\u67AA"
+    damage: 11
+    pellets: 1
+    interval: 0.085
+    speed: 30
+    lifetime: 1.4
+    pelletAngle: 4
+    randomSpread: 4
+    penetration: 0
+    distanceFalloff: 0
+    usesHeat: 1
+    heatPerShot: 0.065
+    muzzleDistance: 1.2
+    displayWidth: 1.6
+    color: {r: 0.65, g: 0.86, b: 1, a: 1}
+    artwork: {fileID: 2800000, guid: 4cd4a941691c7884a9f1c02048073668, type: 3}
+  - name: "\u8702\u7FA4\u51B2\u950B\u67AA"
+    damage: 8
+    pellets: 1
+    interval: 0.065
+    speed: 23
+    lifetime: 0.72
+    pelletAngle: 4
+    randomSpread: 9
+    penetration: 0
+    distanceFalloff: 0
+    usesHeat: 0
+    heatPerShot: 0.065
+    muzzleDistance: 0.72
+    displayWidth: 1.02
+    color: {r: 0.72, g: 0.55, b: 1, a: 1}
+    artwork: {fileID: 2800000, guid: a75886f125b1bc14e81a98d2126010ab, type: 3}
+  roles:
+  - name: "\u7A81\u51FB\u5175"
+    duration: 5
+    cooldown: 12
+    moveSpeed: 7.4
+    healing: 40
+    turretDamage: 22
+    turretInterval: 0.22
+    scanRadius: 14
+    scanMultiplier: 1.5
+    color: {r: 1, g: 0.56, b: 0.18, a: 1}
+    torso: {fileID: 2800000, guid: 7de48b556d76c684697900d907661db2, type: 3}
+    head: {fileID: 2800000, guid: 21dffb8e512ef8c47be3b52fba22a384, type: 3}
+  - name: "\u533B\u7597\u5175"
+    duration: 2
+    cooldown: 14
+    moveSpeed: 7.4
+    healing: 40
+    turretDamage: 22
+    turretInterval: 0.22
+    scanRadius: 14
+    scanMultiplier: 1.5
+    color: {r: 0.25, g: 1, b: 0.55, a: 1}
+    torso: {fileID: 2800000, guid: 339a7eaf7c76b8a4a9fee734dd95aad5, type: 3}
+    head: {fileID: 2800000, guid: 6a951396df1a7394ca0be6031f6b339e, type: 3}
+  - name: "\u5DE5\u7A0B\u5E08"
+    duration: 8
+    cooldown: 15
+    moveSpeed: 7.4
+    healing: 40
+    turretDamage: 22
+    turretInterval: 0.22
+    scanRadius: 14
+    scanMultiplier: 1.5
+    color: {r: 1, g: 0.8, b: 0.2, a: 1}
+    torso: {fileID: 2800000, guid: 679a464354ea53e4f9676b38b923dd20, type: 3}
+    head: {fileID: 2800000, guid: ba2982f05d4bac941828efb348f6769a, type: 3}
+  - name: "\u4FA6\u5BDF\u5175"
+    duration: 6
+    cooldown: 14
+    moveSpeed: 8.6
+    healing: 40
+    turretDamage: 22
+    turretInterval: 0.22
+    scanRadius: 14
+    scanMultiplier: 1.5
+    color: {r: 0.72, g: 0.42, b: 1, a: 1}
+    torso: {fileID: 2800000, guid: b740c1142193adf40a183f149ae10236, type: 3}
+    head: {fileID: 2800000, guid: a9d8b88351cecc84daad64a3fed0ec19, type: 3}
+  difficulties:
+  - name: "\u7B80\u5355"
+    health: 0.75
+    damage: 0.7
+    attackInterval: 1.25
+  - name: "\u4E2D\u7B49"
+    health: 1
+    damage: 1
+    attackInterval: 1
+  - name: "\u56F0\u96BE"
+    health: 1.35
+    damage: 1.35
+    attackInterval: 0.8
+  startingHealth: 100
+  jumpVelocity: 10.6
+  gravity: 27
+  dashSpeed: 23
+  dashDuration: 0.17
+  dashCooldown: 1.35
+  machinegunMoveScale: 0.8513514

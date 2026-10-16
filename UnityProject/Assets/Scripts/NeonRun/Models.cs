@@ -12,6 +12,8 @@ public partial class NeonRun
     int skillFxKind;
     Vector2 turretAim = Vector2.right;
 
+#if UNITY_EDITOR
+    // Legacy procedural artwork is used only by the one-time asset migration.
     Texture2D NewModel(int width, int height)
     {
         var t = new Texture2D(width, height, TextureFormat.RGBA32, false) { filterMode = FilterMode.Point };
@@ -108,6 +110,7 @@ public partial class NeonRun
         robotArt = classModels[0];
         MakeSliceArt();
     }
+#endif
     void DrawModelPreview(int role, Rect r)
     {
         if(sliceTorso[role]!=null) DrawSlicePreview(role,r);
@@ -232,7 +235,7 @@ public partial class NeonRun
                 Line(corner,corner-new Vector2(x*14,0),c,3);
                 Line(corner,corner-new Vector2(0,y*14),c,3);
             }
-            Text("弱点 +50% / "+(foe.scannedUntil-clock).ToString("0.0")+"s",p.x-w,p.y-h-26,220,14,c,true);
+            Text("弱点 +"+((balance.roles[3].scanMultiplier-1)*100).ToString("0")+"% / "+(foe.scannedUntil-clock).ToString("0.0")+"s",p.x-w,p.y-h-26,220,14,c,true);
         }
     }
 }

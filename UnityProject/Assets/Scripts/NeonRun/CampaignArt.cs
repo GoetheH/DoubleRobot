@@ -3,9 +3,10 @@ using UnityEngine;
 public partial class NeonRun
 {
     Texture2D foundryScene, spireScene, archiveScene, reactorScene, sentinelModel;
-    Color SectorAccent => Sector==2?new Color(1,.48f,.17f):Sector==4?new Color(.36f,.76f,1):Sector==5?new Color(.3f,1,.77f):Sector==6?new Color(1,.76f,.24f):Sector==7?new Color(.46f,.8f,.68f):Sector==8?new Color(1,.25f,.55f):Cyan;
+    Color SectorAccent => activeLayout?activeLayout.accent:Cyan;
     Texture2D SectorBackdrop(int sector)
     {
+        if(campaign&&sector>0&&sector<=campaign.levels.Length)return campaign.levels[sector-1].background;
         switch(sector)
         {
             case 2:return foundryScene;
@@ -16,6 +17,7 @@ public partial class NeonRun
             default:return nightCity;
         }
     }
+#if UNITY_EDITOR
     void MakeCampaignArt()
     {
         foundryScene=Resources.Load<Texture2D>("ArtSlice/Foundry");
@@ -86,6 +88,7 @@ public partial class NeonRun
             t.Apply();gunModels[gun]=t;
         }
     }
+#endif
     void DrawCampaignEnvironment()
     {
         Color accent=SectorAccent;
@@ -236,7 +239,8 @@ public partial class NeonRun
     bool TerminalActive(int index)
     {
         // Match the existing II -> I -> III puzzle state, including partial completion.
-        return sequence==3 || index==1&&sequence>=1 || index==0&&sequence>=2;
+        for(int step=0;step<Mathf.Min(sequence,CircuitOrder.Length);step++)if(CircuitOrder[step]==index)return true;
+        return false;
     }
     void DrawCampaignTerminal(int index)
     {
@@ -248,7 +252,7 @@ public partial class NeonRun
         Box(p.x-14,p.y+16,18,3,c);Box(p.x+9,p.y+14,4,6,active?Cyan:Pink);
         Line(p+new Vector2(-14,27),p+new Vector2(-14,38),DeepSteel,5);Line(p+new Vector2(14,27),p+new Vector2(14,38),DeepSteel,5);
         if(active) Glow(p,28,Cyan);
-        Text(new[]{"I","II","III"}[index]+(active?" / 已接通":" [E]"),p.x-40,p.y-61,155,17,active?Cyan:Color.white,true);
+        Text(TerminalName(index)+(active?" / 已接通":" [E]"),p.x-40,p.y-61,155,17,active?Cyan:Color.white,true);
     }
     void DrawCampaignItem(Vector2 item)
     {

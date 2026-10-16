@@ -14,3 +14,4 @@ Boss spawns; normal and rage patterns produce 5/9 projectiles.
 All eight sectors: locked gates, collection without clearing, wrong/right circuits, tower/left/bottom/central exits pass.
 Final flow: real boss projectile kill, both task orders, instant victory away from portal, pause/defeat guards, menu and restart pass.
 Exit gate, final victory, defeat and full run reset pass.
+Editable content integration: moved/resized platform, player/exit positions, added collection items, custom circuit order, gun damage/rate/speed, skill radius/duration/cooldown/multiplier and difficulty all change real runtime behavior.

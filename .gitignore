@@ -41,6 +41,7 @@ Thumbs.db
 # Preserve selected review images and the current validation report only.
 /验证/*
 !/验证/runtime-validation.txt
+!/验证/authoring-validation.txt
 !/验证/01-menu.png
 !/验证/campaign-*.png
 !/验证/slice-01-street.png

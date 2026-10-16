@@ -9,7 +9,7 @@ public partial class NeonRun
     static readonly Color Ink = new Color(.025f, .045f, .08f);
     static readonly Color Muted = new Color(.44f, .58f, .66f);
     readonly List<Texture2D> ownedTextures = new List<Texture2D>();
-    Texture2D robotArt, enemyArt, droneArt, bossArt;
+    Texture2D robotArt;
     Font uiFont;
     GUIStyle labelStyle;
     float renderCamera;
@@ -18,33 +18,7 @@ public partial class NeonRun
     void MakeArt()
     {
         uiFont = Font.CreateDynamicFontFromOSFont(new[] { "Microsoft YaHei", "SimHei", "Arial" }, 24);
-        enemyArt = PixelArt(new[] {
-            "................", "....oooooo......", "...osssssso.....", "...occcccco.....",
-            "...oooooooo.....", "..osssssssso....", ".ossoaaaossosoo.", ".ossoaaaossosssso",
-            "..oosssssoooooo.", "....osssso......", "....oooooo......", "...ossoosso.....",
-            "...ossoosso.....", "..oossoossoo....", "..oooo..oooo....", "................" }, Pink);
-        droneArt = PixelArt(new[] { "................", "................", ".ooo........ooo.", "ossoooooooooosso", ".oossssssssssoo.", "...occcccccco...", "...occaacco.....", "....oooooo......", ".....o..o.......", "................" }, Orange);
-        bossArt = PixelArt(new[] {
-            "....oo....oo....", "...ossossoss o...".Replace(" ", ""), "..osssssssssso..", ".ossoooooooosso.",
-            "ossooccccccoosso", "ossooccaaccoosso", "ossooccaaccoosso", ".ossoooooooosso.",
-            "..osssssssssso..", "...oooooooooo...", "..osso....osso..", ".osso......osso.", "..oo........oo..", "................" }, Pink);
-        MakeModels();
-    }
-    Texture2D PixelArt(string[] rows, Color accent)
-    {
-        int w = 0; foreach (string row in rows) w = Mathf.Max(w, row.Length);
-        var t = new Texture2D(w, rows.Length, TextureFormat.RGBA32, false); t.filterMode = FilterMode.Point;
-        for (int y = 0; y < rows.Length; y++) for (int x = 0; x < w; x++)
-        {
-            char c = x < rows[y].Length ? rows[y][x] : '.';
-            Color col = Color.clear;
-            if (c == 'o') col = new Color(.04f, .08f, .13f);
-            if (c == 's') col = new Color(.59f, .7f, .76f);
-            if (c == 'c') col = accent;
-            if (c == 'a') col = Color.white;
-            t.SetPixel(x, rows.Length - 1 - y, col);
-        }
-        t.Apply(); ownedTextures.Add(t); return t;
+        LoadEditableArt();
     }
     static Matrix4x4 CanvasMatrix(float width, float height)
     {
@@ -103,6 +77,7 @@ public partial class NeonRun
         Box(0, 0, 1600, 900, new Color(.025f, .04f, .085f));
         if(Sector==1 || Sector==0) DrawSliceEnvironment();
         else DrawCampaignEnvironment();
+        DrawAuthoredProps();
         bool open = ObjectiveComplete() && State != Phase.Menu;
         if (Sector != 8 && State != Phase.Menu) DrawSliceGate(open);
         foreach (Pickup p in pickups)
@@ -157,7 +132,7 @@ public partial class NeonRun
         Text(jobNames[profession] + " [Q] " + (clock >= skillReady ? "就绪" : (skillReady - clock).ToString("0.0") + "s") + "  /  " + (weapon == 3 ? (overheated ? "过热冷却" : "热量 " + (heat * 100).ToString("0") + "%") : gunTraits[weapon]), 620, 881, 960, 13, Cyan);
         DrawMission();
         if(IsDualWield) {Text("双枪过载",46,240,330,30,Orange,true);Text("同步火力 / "+(skillUntil-clock).ToString("0.0")+"s",48,282,330,18,Color.white);}
-        if(profession==3&&clock<skillUntil) {int marked=0;foreach(Foe foe in enemies)if(IsScanned(foe))marked++;Text("弱点扫描",46,240,330,30,ClassColors[3],true);Text("标记 "+marked+" / 枪械增伤50% / "+(skillUntil-clock).ToString("0.0")+"s",48,282,420,17,Color.white);}
+        if(profession==3&&clock<skillUntil) {int marked=0;foreach(Foe foe in enemies)if(IsScanned(foe))marked++;Text("弱点扫描",46,240,330,30,ClassColors[3],true);Text("标记 "+marked+" / 枪械增伤"+((CurrentRole.scanMultiplier-1)*100).ToString("0")+"% / "+(skillUntil-clock).ToString("0.0")+"s",48,282,420,17,Color.white);}
         if (combo > 1) { Text(combo + " 连击", 46, 140, 300, 40, Orange, true); Text("连续击破提升积分倍率", 49, 193, 300, 15, Muted); }
         if (clock < bannerUntil) { Box(550, 155, 500, 76, new Color(.025f, .07f, .11f, .9f)); Text(stageNames[Sector], 590, 174, 440, 28, Cyan, true); }
         if ((Sector == 3 || Sector == 8) && enemies.Count > 0)

@@ -6,6 +6,7 @@ public partial class NeonRun
     readonly Texture2D[] sliceTorso=new Texture2D[4], sliceHead=new Texture2D[4];
     Texture2D guardTorso, guardHead;
     static readonly Color DeepSteel=new Color(.09f,.14f,.2f), Rust=new Color(.57f,.2f,.24f), TealLight=new Color(.26f,.91f,.94f);
+#if UNITY_EDITOR
     void Poly(Texture2D texture, Vector2[] points, Color color)
     {
         for(int y=0;y<texture.height;y++) for(int x=0;x<texture.width;x++)
@@ -88,13 +89,15 @@ public partial class NeonRun
             t.Apply(); gunModels[gun]=t;
         }
     }
+#endif
     void Glow(Vector2 p, float radius, Color c)
     {
         for(int i=4;i>=1;i--) Box(p.x-radius*i/2,p.y-radius*i/2,radius*i,radius*i,new Color(c.r,c.g,c.b,.018f*(5-i)));
     }
     void DrawSliceEnvironment()
     {
-        if(nightCity!=null) GUI.DrawTexture(new Rect(-renderCamera*14,0,1900,1070),nightCity,ScaleMode.StretchToFill);
+        var backdrop=activeLayout?activeLayout.background:nightCity;
+        if(backdrop!=null) GUI.DrawTexture(new Rect(-renderCamera*14,0,1900,1070),backdrop,ScaleMode.StretchToFill);
         for(int i=0;i<12;i++) Box(0,500+i*22,1600,22,new Color(.015f,.025f,.065f,i*.011f));
         float floor=ScreenPoint(new Vector2(0,Floor)).y;
         GUI.DrawTextureWithTexCoords(new Rect(-renderCamera*60,floor,mapWidth*60,805-floor),streetTile,new Rect(0,0,mapWidth*60/64,2.6f));

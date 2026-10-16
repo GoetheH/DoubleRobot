@@ -17,7 +17,6 @@ public partial class NeonRun
         "适合远距离点杀。加长磁轨、瞄准镜与支架，重弹可连续穿透多个目标。",
         "适合持续火力压制。厚重散热护罩与大容量弹鼓，连续射击会过热，持枪移动较慢。",
         "适合机动近战。短枪管、折叠枪托与加长弹匣，连射极快，散布较大。" };
-    readonly string[] weaponStats = { "基础伤害 16 / 间隔 0.145秒", "每枚伤害 13 / 7弹丸 / 间隔 0.65秒", "基础伤害 100 / 穿透 / 间隔 1.05秒", "基础伤害 11 / 间隔 0.085秒 / 过热冷却", "基础伤害 8 / 间隔 0.065秒 / 短射程" };
 
     void AdvanceSetup()
     {
@@ -76,16 +75,16 @@ public partial class NeonRun
     void DrawDifficultyPage()
     {
         string[] suggestions = { "推荐初次驾驶 / 更宽容的战斗节奏", "推荐熟悉操作后体验 / 标准挑战", "推荐熟练驾驶员 / 高频火力压迫" };
-        string[] health = { "75%", "100%", "135%" }, damage = { "70%", "100%", "135%" }, cadence = { "125% · 更慢", "100% · 标准", "80% · 更快" };
         for (int i = 0; i < 3; i++)
         {
             float x = 80 + i * 490; Color c = i == 2 ? Pink : i == 0 ? Cyan : Orange;
             if (SelectCard(new Rect(x, 240, 460, 450), selectedDifficulty == i, c)) SelectDifficulty(i);
             Text(difficultyNames[i], x + 28, 286, 380, 44, c, true);
             Text(difficultyDescriptions[i], x + 28, 370, 395, 21, Color.white);
-            Text("敌人生命   " + health[i], x + 28, 450, 395, 22, Muted);
-            Text("敌人伤害   " + damage[i], x + 28, 493, 395, 22, Muted);
-            Text("攻击间隔   " + cadence[i], x + 28, 536, 395, 22, Muted);
+            var settings=balance.difficulties[i];
+            Text("敌人生命   " + (settings.health*100).ToString("0")+"%", x + 28, 450, 395, 22, Muted);
+            Text("敌人伤害   " + (settings.damage*100).ToString("0")+"%", x + 28, 493, 395, 22, Muted);
+            Text("攻击间隔   " + (settings.attackInterval*100).ToString("0")+"%", x + 28, 536, 395, 22, Muted);
             Text(suggestions[i], x + 28, 616, 395, 17, c);
         }
         Text("普通敌军与Boss均受难度影响。职业、枪械和任务路线在三档难度中相同。", 84, 718, 1400, 18, Muted);
@@ -106,7 +105,7 @@ public partial class NeonRun
         Text(jobNames[profession], 955, 260, 520, 38, ClassColors[profession], true);
         Text(roleDescriptions[profession], 955, 328, 515, 20, Color.white);
         Text("主动技能 / Q", 955, 433, 515, 18, Muted, true);
-        Text(jobSkills[profession], 955, 467, 515, 21, ClassColors[profession]);
+        Text(RoleSkillText(profession), 955, 467, 515, 21, ClassColors[profession]);
         Text("视觉识别 / " + roleEffects[profession], 955, 551, 515, 17, Muted);
         if (Button("预览技能特效", new Rect(955, 610, 480, 56), ClassColors[profession])) previewStarted = Time.realtimeSinceStartup;
         Text("每种职业均可携带任意一类枪械。职业技能与携带枪械在本局中固定。", 84, 718, 1400, 18, Muted);
@@ -124,7 +123,7 @@ public partial class NeonRun
         Text(weaponNames[selectedWeapon], 700, 260, 760, 38, GunColors[selectedWeapon], true);
         GUI.DrawTexture(new Rect(735, 346, 680, 170), gunModels[selectedWeapon], ScaleMode.ScaleToFit);
         Text(gunTraits[selectedWeapon], 700, 535, 760, 22, GunColors[selectedWeapon], true);
-        Text(weaponStats[selectedWeapon], 700, 580, 760, 18, Muted);
+        Text(GunStatsText(selectedWeapon), 700, 580, 760, 18, Muted);
         Text(weaponDescriptions[selectedWeapon], 700, 623, 760, 19, Color.white);
         Text("确认后，本局八关只能使用所选枪械；返回主菜单后才可更换。", 84, 729, 1400, 18, Orange);
     }

@@ -393,7 +393,48 @@ public partial class NeonRun
         immuneUntil = -1; Hurt(999); Require(State == Phase.Defeat, "defeat");
         StartRun(); Require(Health == 100 && Kills == 0 && damageLevel == 0, "restart clears run");
         log += "Exit gate, final victory, defeat and full run reset pass.\n";
+        log += ValidateEditableRuntime();
         return log;
+    }
+    string ValidateEditableRuntime()
+    {
+        for(int i=0;i<5;i++)Require(gunModels[i]==balance.guns[i].artwork,"runtime gun uses editable PNG asset "+i);
+        for(int i=0;i<4;i++)Require(sliceTorso[i]==balance.roles[i].torso&&sliceHead[i]==balance.roles[i].head,"runtime role uses editable PNG assets "+i);
+        Require(streetTile==campaign.street&&sliceDrone==campaign.drone&&sentinelModel==campaign.boss,"runtime environment/enemies use authored images");
+        NeonCampaign originalCampaign=campaign;NeonBalance originalBalance=balance;
+        var editedCampaign=Instantiate(campaign);var editedBalance=Instantiate(balance);
+        var editedLayout=Instantiate(campaign.levels[0]);var editedCircuit=Instantiate(campaign.levels[5]);
+        try
+        {
+            editedCampaign.balance=editedBalance;editedCampaign.levels[0]=editedLayout;editedCampaign.levels[5]=editedCircuit;
+            StageElement platform=Array.Find(editedLayout.Elements,e=>e.kind==StageElement.Kind.Platform);
+            platform.transform.position+=new Vector3(1.25f,.45f,0);platform.transform.localScale+=new Vector3(1.5f,.1f,0);Rect expected=platform.PlatformRect;
+            StageElement gate=Array.Find(editedLayout.Elements,e=>e.kind==StageElement.Kind.Exit);gate.transform.position+=Vector3.left*5;
+            StageElement spawn=Array.Find(editedLayout.Elements,e=>e.kind==StageElement.Kind.PlayerSpawn);spawn.transform.position+=Vector3.right*2;
+            editedLayout.goal=StageLayout.Goal.CollectItems;
+            for(int i=0;i<2;i++){var item=new GameObject("DesignerAddedItem");item.transform.SetParent(editedLayout.transform,false);item.transform.localPosition=new Vector2(12+i*2,4);item.AddComponent<StageElement>().kind=StageElement.Kind.MissionItem;}
+            editedBalance.guns[0].damage=37;editedBalance.guns[0].interval=.3f;editedBalance.guns[0].speed=42;
+            editedBalance.roles[3].duration=4;editedBalance.roles[3].cooldown=9;editedBalance.roles[3].scanRadius=5;editedBalance.roles[3].scanMultiplier=2;
+            editedBalance.difficulties[1].health=2;
+            campaign=editedCampaign;balance=editedBalance;ReturnToMenu();SelectProfession(3);SelectWeapon(0);SelectDifficulty(1);StartRun();
+            Require(Vector2.Distance(player,spawn.transform.position)<.001f&&Vector2.Distance(exit,gate.transform.position)<.001f,"authored player/exit transforms drive runtime");
+            Require(ledges.Exists(r=>Mathf.Abs(r.x-expected.x)<.001f&&Mathf.Abs(r.y-expected.y)<.001f&&Mathf.Abs(r.width-expected.width)<.001f&&Mathf.Abs(r.height-expected.height)<.001f),"authored moved/resized collider drives platform");
+            Require(missionItemTotal==2&&missionItems.Count==2&&!ObjectiveComplete(),"added prefab items drive goal count");
+            relics=1;Require(!ObjectiveComplete(),"partial configured goal remains locked");relics=2;Require(ObjectiveComplete(),"configured collection count unlocks goal");
+            aim=Vector2.right;var near=new Foe{p=player+new Vector2(3,.15f),hp=1000,max=1000};var far=new Foe{p=player+Vector2.right*6,hp=1000,max=1000};enemies.Add(near);enemies.Add(far);UseSkill();
+            Require(skillUntil==4&&skillReady==9&&IsScanned(near)&&!IsScanned(far),"Inspector skill duration/cooldown/radius drive runtime");
+            FirePlayer();Require(shots.Count==1&&shots[0].damage==37&&Mathf.Abs(nextShot-.3f)<.001f&&Mathf.Abs(shots[0].v.magnitude-42)<.001f,"Inspector gun damage/rate/speed drive real projectile");
+            for(int i=0;i<20;i++)UpdateShots(.016f);Require(near.hp==926,"Inspector scan multiplier affects actual damage");
+            editedCircuit.switchOrder=new[]{2,1,0};BeginSector(6);InteractSwitch(2);Require(sequence==1&&TerminalActive(2)&&!TerminalActive(1),"edited circuit sequence and lights drive runtime");
+            BeginSector(3);Require(enemies[0].max==2500,"Inspector difficulty health multiplier drives boss");
+        }
+        finally
+        {
+            campaign=originalCampaign;balance=originalBalance;editedLayout.gameObject.SetActive(false);editedCircuit.gameObject.SetActive(false);
+            Destroy(editedLayout.gameObject);Destroy(editedCircuit.gameObject);Destroy(editedBalance);Destroy(editedCampaign);
+            ReturnToMenu();SelectProfession(0);SelectWeapon(0);SelectDifficulty(1);StartRun();
+        }
+        return "Editable content integration: moved/resized platform, player/exit positions, added collection items, custom circuit order, gun damage/rate/speed, skill radius/duration/cooldown/multiplier and difficulty all change real runtime behavior.\n";
     }
     static void Require(bool value, string name) { if (!value) throw new InvalidOperationException(name); }
     static string ModelSilhouette(Texture2D model)

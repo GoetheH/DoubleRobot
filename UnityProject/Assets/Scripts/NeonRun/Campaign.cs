@@ -13,9 +13,9 @@ public partial class NeonRun
     }
     readonly string[] difficultyNames = { "简单", "中等", "困难" };
     readonly string[] difficultyDescriptions = { "敌人更脆弱，伤害更低，攻击更慢", "标准战斗体验", "敌人更坚韧，伤害更高，攻击更快" };
-    float EnemyHealthScale => runDifficulty == 0 ? .75f : runDifficulty == 2 ? 1.35f : 1f;
-    float EnemyDamageScale => runDifficulty == 0 ? .7f : runDifficulty == 2 ? 1.35f : 1f;
-    float EnemyAttackIntervalScale => runDifficulty == 0 ? 1.25f : runDifficulty == 2 ? .8f : 1f;
+    float EnemyHealthScale => balance.difficulties[runDifficulty].health;
+    float EnemyDamageScale => balance.difficulties[runDifficulty].damage;
+    float EnemyAttackIntervalScale => balance.difficulties[runDifficulty].attackInterval;
 
     public void SelectDifficulty(int index)
     {
@@ -29,7 +29,6 @@ public partial class NeonRun
     readonly List<Vector2> missionItems = new List<Vector2>();
     readonly List<Vector2> switches = new List<Vector2>();
     readonly string[] jobNames = { "突击兵", "医疗兵", "工程师", "侦察兵" };
-    readonly string[] jobSkills = { "双枪过载：幻化副枪，同步开火5秒 / 冷却12秒", "急救：回复40装甲、无敌2秒 / 冷却14秒", "炮台：自动索敌8秒 / 冷却15秒", "弱点扫描：标记14米内敌人6秒，枪械伤害+50% / 冷却14秒" };
     readonly string[] gunTraits = { "精准稳定 / 持续输出", "7弹丸扇形 / 近战爆发 / 距离衰减", "高速穿透 / 单发重击 / 低射速", "连续压制 / 高射速 / 过热冷却", "极速连射 / 宽散布 / 短射程" };
     readonly string[] stageNames = { "", "01 / 霓雨下城", "02 / 熔炉生产线", "03 / 核心守卫", "04 / 天线高塔", "05 / 数据回收", "06 / 配电迷阵", "07 / 地下档案", "08 / 中枢停机" };
 
@@ -39,50 +38,21 @@ public partial class NeonRun
         cameraY = 0; heat = 0; overheated = false; turretUntil = skillUntil = 0;
         skillFxUntil = flashUntil = 0;
         skillReady = dashReady = clock; dashUntil = 0;
-        mapWidth = 44; mapHeight = 12; exit = new Vector2(42, Floor);
-        mission = "清除敌军后进入传送门";
-        if (Sector == 4)
-        {
-            mapWidth = 24; mapHeight = 32; ledges.Clear();
-            for (int i = 0; i < 10; i++) ledges.Add(new Rect(i % 2 == 0 ? 7 : 12, 3.5f + i * 2.5f, 7, .32f));
-            exit = new Vector2(15, 26.32f); mission = "攀登高塔，领取天线钥匙后到达顶部";
-            missionItems.Add(new Vector2(9, 24.4f));
-        }
-        if (Sector == 5)
-        {
-            exit = new Vector2(3, Floor); mission = "取得3份数据，再返回左侧传送门";
-            missionItems.Add(new Vector2(10, 4.2f)); missionItems.Add(new Vector2(18, 5.8f)); missionItems.Add(new Vector2(37, 5.9f));
-        }
-        if (Sector == 6 || Sector == 8)
-        {
-            exit = new Vector2(22, Sector == 8 ? 5.22f : Floor);
-            mission = Sector == 8 ? "击败守卫＋按 II → I → III 关闭反应堆，即可通关（靠近按E）" : "按 II → I → III 接通配电（靠近按E，错误会重置）";
-            switches.Add(new Vector2(10, 4.1f)); switches.Add(new Vector2(18, 5.7f)); switches.Add(new Vector2(37, 5.8f));
-            if (Sector == 8) ledges.Add(new Rect(20, 4.9f, 5, .32f));
-        }
-        if (Sector == 7)
-        {
-            mapWidth = 26; mapHeight = 30; ledges.Clear();
-            for (int i = 0; i < 9; i++) ledges.Add(new Rect(i % 2 == 0 ? 4 : 13, 3.5f + i * 2.5f, 8, .32f));
-            player = new Vector2(8, 23.82f); exit = new Vector2(5, Floor);
-            mission = "下行收集2份档案，进入底层左侧传送门（S穿过平台）";
-            missionItems.Add(new Vector2(7, 14.1f)); missionItems.Add(new Vector2(17, 6.6f));
-        }
+        ReadAuthoredLevel(Sector);
     }
     bool ObjectiveComplete()
     {
-        if (Sector == 4) return relics == 1;
-        if (Sector == 5) return relics == 3;
-        if (Sector == 6) return sequence == 3;
-        if (Sector == 7) return relics == 2;
-        if (Sector == 8) return sequence == 3 && spawned >= quota && enemies.Count == 0;
+        if(!activeLayout)return false;
+        if(activeLayout.goal==StageLayout.Goal.CollectItems)return relics==missionItemTotal;
+        if(activeLayout.goal==StageLayout.Goal.Circuit)return CircuitComplete;
+        if(activeLayout.goal==StageLayout.Goal.BossAndCircuit)return CircuitComplete&&spawned>=quota&&enemies.Count==0;
         return spawned >= quota && enemies.Count == 0;
     }
     void CheckExit()
     {
         if (State != Phase.Playing || !ObjectiveComplete()) return;
         // The final objective ends the campaign at the player's current position.
-        if (Sector == 8)
+        if (activeLayout.autoFinish)
         {
             State = Phase.Victory;
             shots.Clear(); turretUntil = 0;
@@ -93,9 +63,8 @@ public partial class NeonRun
     }
     void InteractSwitch(int index)
     {
-        if (sequence >= 3) return;
-        int[] order = { 1, 0, 2 };
-        if (index == order[sequence]) { sequence++; Sound(upgradeSound, .12f); }
+        if (CircuitComplete) return;
+        if (index == CircuitOrder[sequence]) { sequence++; Sound(upgradeSound, .12f); }
         else { sequence = 0; AddSpark(player + Vector2.up, Vector2.up, Pink, 2, "顺序错误，已重置"); }
     }
     void UpdateCampaign(float dt)
@@ -114,8 +83,8 @@ public partial class NeonRun
             Foe target = enemies[0];
             foreach (Foe e in enemies) if (Vector2.Distance(e.p, turret) < Vector2.Distance(target.p, turret)) target = e;
             turretAim = (target.p + Vector2.up * .5f - turret).normalized;
-            shots.Add(new Shot { p = turret, v = turretAim * 30, life = 2, damage = 22, color = Cyan });
-            turretShot = clock + .22f;
+            shots.Add(new Shot { p = turret, v = turretAim * 30, life = 2, damage = CurrentRole.turretDamage, color = Cyan });
+            turretShot = clock + CurrentRole.turretInterval;
         }
         CheckExit();
     }
@@ -123,15 +92,16 @@ public partial class NeonRun
     {
         if (State != Phase.Playing || clock < skillReady) return;
         skillFxKind = profession; skillFxStarted = clock;
-        skillFxUntil = clock + (profession == 0 ? 5 : profession == 1 ? 2 : profession == 2 ? 8 : 6);
-        if (profession == 0) { skillUntil = clock + 5; skillReady = clock + 12; }
-        if (profession == 1) { Health = Mathf.Min(MaxHealth, Health + 40); immuneUntil = clock + 2; skillReady = clock + 14; }
-        if (profession == 2) { turret = player + Vector2.up * .5f; turretUntil = clock + 8; turretShot = clock; skillReady = clock + 15; }
+        skillFxUntil = clock + CurrentRole.duration;
+        skillReady=clock+CurrentRole.cooldown;
+        if (profession == 0) { skillUntil = clock + CurrentRole.duration; }
+        if (profession == 1) { Health = Mathf.Min(MaxHealth, Health + CurrentRole.healing); immuneUntil = clock + CurrentRole.duration; }
+        if (profession == 2) { turret = player + Vector2.up * .5f; turretUntil = clock + CurrentRole.duration; turretShot = clock; }
         if (profession == 3)
         {
-            skillUntil=clock+6;skillReady=clock+14;
+            skillUntil=clock+CurrentRole.duration;
             foreach(Foe foe in enemies)
-                if(Vector2.Distance(player+Vector2.up*.5f,foe.p+Vector2.up*(foe.kind==3?0:.5f))<=14)
+                if(Vector2.Distance(player+Vector2.up*.5f,foe.p+Vector2.up*(foe.kind==3?0:.5f))<=CurrentRole.scanRadius)
                     foe.scannedUntil=skillUntil;
         }
         Burst(player + Vector2.up * .5f, ClassColors[profession], 20); Sound(upgradeSound, .15f);
@@ -153,11 +123,11 @@ public partial class NeonRun
         string activeMission = mission;
         if (Sector == 8)
             activeMission = spawned >= quota && enemies.Count == 0
-                ? "守卫已击败 / 关闭反应堆后立即结算：II → I → III（靠近按E）"
-                : sequence == 3 ? "反应堆已关闭 / 击败守卫后立即结算" : mission;
+                ? "守卫已击败 / 关闭反应堆后立即结算："+OrderText()+"（靠近按E）"
+                : CircuitComplete ? "反应堆已关闭 / 击败守卫后立即结算" : mission;
         Text(activeMission, 420, 108, 1050, 18, Orange);
         if (missionItems.Count > 0 || relics > 0) Text("已回收 " + relics + " / " + (relics + missionItems.Count), 420, 136, 440, 16, Cyan);
-        if (switches.Count > 0) Text("线路 " + sequence + " / 3 · II → I → III", 420, 136, 520, 16, Cyan);
+        if (switches.Count > 0) Text("线路 " + sequence + " / "+CircuitOrder.Length+" · "+OrderText(), 420, 136, 520, 16, Cyan);
         Vector2 delta = exit - player;
         if (Sector == 8) Text("终关 / 完成任务即结算", 1320, 112, 270, 16, Cyan);
         else Text("传送门 " + (delta.y > 3 ? "↑" : delta.y < -3 ? "↓" : delta.x > 0 ? "→" : "←") + " " + delta.magnitude.ToString("0") + "m", 1360, 112, 230, 18, ObjectiveComplete() ? Cyan : Muted);

@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b17cb63902ebbbb4fb6c064dd8dbdaad, type: 3}
+  m_Name: Campaign
+  m_EditorClassIdentifier: 
+  balance: {fileID: 11400000, guid: facbf82b228f679468c076c5cd88bfe9, type: 2}
+  levels:
+  - {fileID: 5634874610569651065, guid: a48d9d7e953c66542b327a06617c9942, type: 3}
+  - {fileID: 1761548482266450831, guid: 5f4dd05cf4d7c994f9d70be662e49bef, type: 3}
+  - {fileID: 5689822727054197172, guid: f28a13bbf00dd76468fa5f992ea69a86, type: 3}
+  - {fileID: 2754059352152957858, guid: 4c113560c16b0934199d9e9f374ba107, type: 3}
+  - {fileID: 1184253128454104081, guid: d6e69c858295e4444a6b3edf3507dddd, type: 3}
+  - {fileID: 6483286909051760455, guid: e887865b227c17b4eac8620ea572928c, type: 3}
+  - {fileID: 1280743775037133255, guid: 793b46f7949d19e4988599f6d075e8fe, type: 3}
+  - {fileID: 2402521743751784000, guid: 611a208b4e702aa4695a3a8e1141531e, type: 3}
+  street: {fileID: 2800000, guid: b2f727da3baacd649a4ec90d4a61e244, type: 3}
+  catwalk: {fileID: 2800000, guid: 4b57d79cc3e079341b96f2f7759b2769, type: 3}
+  drone: {fileID: 2800000, guid: 883f4a1214874474981018bd3f203ad0, type: 3}
+  boss: {fileID: 2800000, guid: 980390d3bf06aee4a82ef7319ca1d290, type: 3}
+  guardTorso: {fileID: 2800000, guid: 5bacdd0371bc7e54fb892bc8cbc47f0b, type: 3}
+  guardHead: {fileID: 2800000, guid: 438044393cefa1d4d973704c0c61ced5, type: 3}
+  portraitModels:
+  - {fileID: 2800000, guid: d2dc86102a215e44cb39ba84ab8a783d, type: 3}
+  - {fileID: 2800000, guid: 2f83f6faac4321049ab7be2c37c739c0, type: 3}
+  - {fileID: 2800000, guid: 932bffba2935e6343990d3760b49988a, type: 3}
+  - {fileID: 2800000, guid: a5a7fc35187f59b4689eba0aa25d44a0, type: 3}
