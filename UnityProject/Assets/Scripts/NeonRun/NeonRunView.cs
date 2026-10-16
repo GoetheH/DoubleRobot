@@ -17,7 +17,8 @@ public partial class NeonRun
 
     void MakeArt()
     {
-        uiFont = Font.CreateDynamicFontFromOSFont(new[] { "Microsoft YaHei", "SimHei", "Arial" }, 24);
+        uiFont = Resources.Load<Font>("Fonts/ChineseUI");
+        if(uiFont==null)uiFont = Font.CreateDynamicFontFromOSFont(new[] { "Microsoft YaHei", "SimHei", "Arial" }, 24);
         LoadEditableArt();
     }
     static Matrix4x4 CanvasMatrix(float width, float height)

@@ -279,6 +279,7 @@ public partial class NeonRun : MonoBehaviour
     {
         foreach (Texture2D t in ownedTextures) if (t != null) {if(Application.isPlaying)Destroy(t);else DestroyImmediate(t);}
         foreach (AudioClip clip in new[] { fireSound, hitSound, jumpSound, upgradeSound }) if (clip != null) {if(Application.isPlaying)Destroy(clip);else DestroyImmediate(clip);}
-        if (uiFont != null) {if(Application.isPlaying)Destroy(uiFont);else DestroyImmediate(uiFont);}
+        // Resources-owned fonts are shared assets and must not be destroyed.
+        if (uiFont != null && uiFont != Resources.Load<Font>("Fonts/ChineseUI")) {if(Application.isPlaying)Destroy(uiFont);else DestroyImmediate(uiFont);}
     }
 }
