@@ -1,0 +1,17 @@
+PASS — Neon Breakout runtime validation
+300 rotation poses: fixed grip, transformed line endpoints, all five gun bounds; six viewport sizes including letterboxing.
+All eight sector backgrounds and new sentinel load; terminal lights match partial progress, error reset and completed circuit.
+First-sector resources, five dual-wield variants, separate sockets, paired real damage, normal cadence and expiry pass.
+Deployment wizard: home/difficulty/profession/weapon steps, back retention, final confirmation, locked profession; four distinct bodies and five gun silhouettes pass.
+Five loadouts: menu selection, all eight sectors fire only chosen gun, upgrade/pause/end locks, restart retention and menu change pass.
+Three difficulties: menu selection, invalid input, regular/boss health and damage, attack frequency, run lock, upgrade and restart retention pass.
+All five weapons spawn, sweep-hit and kill targets.
+Four profession skills, cooldowns, turret targeting, sniper and machinegun heat pass.
+Scout scan: radius, no displacement/shield, real rifle bonus, normal unmarked/turret damage, cooldown, expiry, new-enemy exclusion, boss sniper bonus and sector reset pass.
+Damage, invulnerability, dash protection and landing reset pass.
+All five upgrades apply and advance the sector.
+Boss spawns; normal and rage patterns produce 5/9 projectiles.
+All eight sectors: locked gates, collection without clearing, wrong/right circuits, tower/left/bottom/central exits pass.
+Final flow: real boss projectile kill, both task orders, instant victory away from portal, pause/defeat guards, menu and restart pass.
+Exit gate, final victory, defeat and full run reset pass.
+Editable content integration: moved/resized platform, player/exit positions, added collection items, custom circuit order, gun damage/rate/speed, skill radius/duration/cooldown/multiplier and difficulty all change real runtime behavior.

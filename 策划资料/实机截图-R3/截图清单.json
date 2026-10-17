@@ -1,0 +1,173 @@
+{
+  "capturedOn": "2026-10-17",
+  "sourceCommit": "a70dc9f363c0cea908ab8aa425a999919c96cc3b",
+  "mdHash": "aae6939c50c0ed8e9b930cc997f89400ab9104081811f7a0efe5c45ca5c3f524",
+  "captureBuild": "本机现有 Windows 试玩版；本轮未重新构建",
+  "images": [
+    {
+      "id": "IMG-01",
+      "uiSection": "4.3",
+      "file": "01-menu.png",
+      "title": "U01 首页",
+      "point": "游戏名、开始入口、配装预览与最高纪录。",
+      "method": "菜单验证：由现有验证流程打开页面；未合成或重画。",
+      "width": 1600,
+      "height": 900,
+      "sha256": "136142b20f706437f27fb07858a43dc2ddd9adeccbbb28cf2049be56fcedbf05"
+    },
+    {
+      "id": "IMG-02",
+      "uiSection": "4.4",
+      "file": "difficulty-1.png",
+      "title": "U02 难度选择",
+      "point": "三档单选、倍率比较、返回与下一步。",
+      "method": "菜单验证：由现有验证流程选择中等难度。",
+      "width": 1600,
+      "height": 900,
+      "sha256": "2243b71087d20a2d8bd96c2202fca792c7880f090c1efe70d0c443bec1fc30df"
+    },
+    {
+      "id": "IMG-03",
+      "uiSection": "4.5",
+      "file": "profession-3.png",
+      "title": "U03 职业选择：侦察兵",
+      "point": "四职业卡片、人物模型、技能预览和冷却 6 秒。",
+      "method": "菜单验证：由现有验证流程选中侦察兵。",
+      "width": 1600,
+      "height": 900,
+      "sha256": "805e09f82d48074897a24546c9cc44f0171545beb804ac1e8ff6825204da8220"
+    },
+    {
+      "id": "IMG-04",
+      "uiSection": "4.6",
+      "file": "loadout-3.png",
+      "title": "U04 枪械选择：重型机枪",
+      "point": "独立枪械模型、过热特性和“本局八关只能使用所选枪械”。",
+      "method": "菜单验证：由现有验证流程选中重型机枪。",
+      "width": 1600,
+      "height": 900,
+      "sha256": "e2a6a8c0e076587ebac7762d6ad8139506d2a25ff75717b6a8ec90a7f3691d8f"
+    },
+    {
+      "id": "IMG-05",
+      "uiSection": "4.7",
+      "file": "slice-01-street.png",
+      "title": "U05 战斗 HUD",
+      "point": "生命、主任务、枪械与技能区的当前布局。独立冲刺状态等重排仍属设计补充。",
+      "method": "战斗验证场景：脚本预设角色位置、敌人和计时，冻结后由游戏引擎截图。",
+      "width": 1600,
+      "height": 900,
+      "sha256": "81e74f0a1afcd33ffe715c8d7c2c8c750149d5381e678aa6e8381ddba2a77e3b"
+    },
+    {
+      "id": "IMG-06",
+      "uiSection": "4.7.1",
+      "file": "skill-0.png",
+      "title": "技能反馈：双枪过载",
+      "point": "副枪与双枪口、效果剩余时间及独立 Q 冷却。",
+      "method": "技能验证场景：脚本布置目标并施放技能，画面为实际渲染。",
+      "width": 1600,
+      "height": 900,
+      "sha256": "4856b49b672278212081e4ea6f4cfbc8e0acbe563240d3e60e23ce40b7c16ee6"
+    },
+    {
+      "id": "IMG-07",
+      "uiSection": "4.7.1",
+      "file": "skill-3.png",
+      "title": "技能反馈：弱点扫描",
+      "point": "敌人锁定框、标记数量、50% 增伤与 5.8 秒倒计时；施放初值为 6 秒。",
+      "method": "技能验证场景：脚本预设敌人、施放扫描并冻结画面；不是自然战斗录像。",
+      "width": 1600,
+      "height": 900,
+      "sha256": "3d9d6f841b26252174bb1a8de7235153dcb984b66254ffde1bbd1a76d0edff02"
+    },
+    {
+      "id": "IMG-08",
+      "uiSection": "4.8.1",
+      "file": "campaign-4-top.png",
+      "title": "任务与出口：高塔顶部",
+      "point": "向上关卡、钥匙已收集后的任务提示及顶部出口方向。",
+      "method": "关卡验证场景：脚本预设位置和已完成收集进度，检查顶部出口表现。",
+      "width": 1600,
+      "height": 900,
+      "sha256": "4dc8fc32528df3ad1b77cac10b914f2ac3c9f790d53527d315a6b2ad08839324"
+    },
+    {
+      "id": "IMG-09",
+      "uiSection": "4.8.1",
+      "file": "campaign-7-bottom.png",
+      "title": "任务与出口：地下档案底层",
+      "point": "向下探索后，任务进度和底层左侧出口。",
+      "method": "关卡验证场景：脚本预设位置和两件档案已收集，检查底层出口表现。",
+      "width": 1600,
+      "height": 900,
+      "sha256": "c1092014e377ba14fc4a6d8acc1fac7ff8fe25fb08326349f4e1e0b8577e7179"
+    },
+    {
+      "id": "IMG-10",
+      "uiSection": "4.8.3",
+      "file": "campaign-6.png",
+      "title": "机关状态：部分接通",
+      "point": "终端编号、当前进度 1/3，以及 II 已接通的状态。",
+      "method": "机关验证场景：脚本正确输入第一步 II，保留其余终端未完成。",
+      "width": 1600,
+      "height": 900,
+      "sha256": "4b5cefac5cd508d070c28eaf2b439965d47c9fb8f2137fb5f95c290b60090833"
+    },
+    {
+      "id": "IMG-11",
+      "uiSection": "4.8.3",
+      "file": "campaign-6-powered.png",
+      "title": "机关状态：全部接通",
+      "point": "三步接通后的完成状态及中部出口。锁定原因细化仍属于设计补充。",
+      "method": "机关验证场景：脚本按 II → I → III 完成配电并设置镜头位置。",
+      "width": 1600,
+      "height": 900,
+      "sha256": "a436cf53dda7d8e119c6a5011a6a84f85cc112d2f539a08235c67927f54097c4"
+    },
+    {
+      "id": "IMG-12",
+      "uiSection": "4.9",
+      "file": "03-upgrade.png",
+      "title": "U07 关间补给",
+      "point": "三张模块卡、作用介绍、选择按钮和数字键；前后数值对比尚未完整实现。",
+      "method": "补给验证：脚本调用现有补给流程打开实际页面。",
+      "width": 1600,
+      "height": 900,
+      "sha256": "b8ec8f9d1d59013a8c524ad1902bc3344ceb4577e1d1b87dbc703c7bae55aee4"
+    },
+    {
+      "id": "IMG-13",
+      "uiSection": "4.10",
+      "file": "manual-pause.jpg",
+      "title": "U08 暂停",
+      "point": "人工按 Esc 打开的暂停页。U11 返回首页二次确认尚未实现，本图不冒充其截图。",
+      "method": "人工操作实机：从第一关按 Esc 暂停，由窗口捕获取得；保留标题栏。",
+      "width": 1282,
+      "height": 751,
+      "sha256": "e8b21169e6bd9d0a4e5e7de3e77a95731d722ef9b45db8a7c734d77ad7b744c5"
+    },
+    {
+      "id": "IMG-14",
+      "uiSection": "4.11",
+      "file": "09-victory.png",
+      "title": "U09 胜利结算",
+      "point": "终关结束标题、结果数据、重新出击和返回入口。00:00 和击破 1 来自验证预设。",
+      "method": "终关验证场景：脚本安排机关和低血 Boss，以实际弹丸击杀触发胜利；不是手打八关纪录。",
+      "width": 1600,
+      "height": 900,
+      "sha256": "bece75b17b1a992667593c74723c2220d851ffd9129d41be768aac5617700785"
+    },
+    {
+      "id": "IMG-15",
+      "uiSection": "4.11",
+      "file": "manual-defeat.jpg",
+      "title": "U10 失败结算",
+      "point": "装甲耗尽后的结算；R 重新出击与 Esc 返回菜单。",
+      "method": "人工操作实机：正常开始第一关后未进行攻击，受敌弹伤害至失败；保留标题栏。",
+      "width": 1282,
+      "height": 751,
+      "sha256": "39229b614be15d7607e82106796129e567bee92a088a096b00a0e925719f333f"
+    }
+  ]
+}
